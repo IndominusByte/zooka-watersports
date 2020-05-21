@@ -18,9 +18,12 @@ class CreateVoucher(Resource):
         # save image voucher
         magic_image = MagicImage(file=file['image'],width=2000,height=300,path_upload='vouchers/',square=False)
         magic_image.save_image()
+        image = magic_image.FILE_NAME
         # crop image voucher to make thumbnail
         magic_image = MagicImage(file=file['image'],width=650,height=300,path_upload='vouchers/thumbnail/',square=False)
         magic_image.save_image()
-
-        print(file)
-        print(data)
+        thumbnail = magic_image.FILE_NAME
+        # save to db
+        voucher = Voucher(**data,image=image,thumbnail=thumbnail)
+        voucher.save_to_db()
+        return {"message":"Success add voucher."}, 201

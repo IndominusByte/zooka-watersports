@@ -1,5 +1,6 @@
 from services.serve import db
 from datetime import datetime
+from slugify import slugify
 
 class Voucher(db.Model):
     __tablename__ = 'vouchers'
@@ -22,6 +23,22 @@ class Voucher(db.Model):
     updated_at = db.Column(db.DateTime,default=datetime.now)
 
     activity_id = db.Column(db.Integer,db.ForeignKey('activities.id'),nullable=True)
+
+    def __init__(self,**data):
+        self.image = data['image']
+        self.thumbnail = data['thumbnail']
+        self.title = data['title']
+        self.slug = slugify(self.title)
+        self.code = data['code']
+        self.valid_start = data['valid_start']
+        self.valid_end = data['valid_end']
+        self.description = data['description']
+        self.discount = data['discount']
+        self.type_voucher = data['type_voucher']
+        self.minimum = data['minimum']
+        self.terms = data['terms']
+        if 'activity_id' in data:
+            self.activity_id = data['activity_id']
 
     def save_to_db(self) -> None:
         db.session.add(self)
