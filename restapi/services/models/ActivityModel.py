@@ -25,6 +25,7 @@ class Activity(db.Model):
 
     category_id = db.Column(db.Integer,db.ForeignKey('categories.id'),nullable=False)
     wishlists = db.relationship('Wishlist',backref='activity',cascade='all,delete-orphan')
+    vouchers = db.relationship('Voucher',backref='activity',cascade='all,delete-orphan')
 
     def __init__(self,**data):
         self.name = data['name']

@@ -223,7 +223,7 @@ class UpdateAvatar(Resource):
         if user.avatar != 'default.png':
             MagicImage.delete_image(file=user.avatar,path_delete='avatars/')
 
-        magic_image = MagicImage(file=args['avatar'],resize=260,path_upload='avatars/')
+        magic_image = MagicImage(file=args['avatar'],width=260,height=260,path_upload='avatars/')
         magic_image.save_image()
 
         user.avatar = magic_image.FILE_NAME

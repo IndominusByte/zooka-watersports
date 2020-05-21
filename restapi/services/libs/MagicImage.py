@@ -6,9 +6,11 @@ class MagicImage:
     FILE_NAME = None
     _BASE_DIR = os.path.join(os.path.dirname(__file__),'../static/')
 
-    def __init__(self,file: Union[TextIO,Dict[str,TextIO]], resize: int, path_upload: str):
+    def __init__(self,file: Union[TextIO,Dict[str,TextIO]], width: int, height: int, path_upload: str, square = True):
         self.file = file
-        self.resize = resize
+        self.width = width
+        self.height = height
+        self.square = square
         self.path_upload = path_upload
 
     def _crop_center(self,pil_img: TextIO, crop_width: int, crop_height: int) -> TextIO:
@@ -39,8 +41,11 @@ class MagicImage:
             # set filename
             ext = im.format.lower()
             filename = uuid.uuid4().hex + '.' + ext
-            # crop to center and resize img by 260 x 260
-            img = self._crop_max_square(im).resize((self.resize, self.resize), Image.LANCZOS)
+            # crop to center and resize img by width x height
+            if self.square:
+                img = self._crop_max_square(im).resize((self.width, self.height), Image.LANCZOS)
+            else:
+                img = self._crop_center(im,self.width,self.height)
             # remove exif tag
             img = self._remove_exif_tag(img)
             # flip image to right path

@@ -24,7 +24,7 @@ class CreateActivity(Resource):
         if Activity.query.filter_by(name=data['name']).first():
             raise ValidationError({'name':['The name has already been taken.']})
 
-        magic_image = MagicImage(file=files,resize=550,path_upload='activities/')
+        magic_image = MagicImage(file=files,width=550,height=550,path_upload='activities/')
         magic_image.save_image()
         files_name = magic_image.FILE_NAME
 
@@ -63,7 +63,7 @@ class UpdateDeleteActivity(Resource):
                 if index == 'image4':
                     MagicImage.delete_image(file=activity.image4,path_delete='activities/')
             # save image
-            magic_image = MagicImage(file=files,resize=550,path_upload='activities/')
+            magic_image = MagicImage(file=files,width=550,height=550,path_upload='activities/')
             magic_image.save_image()
             files_name = magic_image.FILE_NAME
 

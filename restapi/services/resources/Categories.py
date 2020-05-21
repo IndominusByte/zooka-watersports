@@ -17,7 +17,7 @@ class CreateCategory(Resource):
         file = _image_schema.load(request.files)
         data = _category_schema.load(request.form)
         # save image
-        magic_image = MagicImage(file=file['image'],resize=260,path_upload='categories/')
+        magic_image = MagicImage(file=file['image'],width=260,height=260,path_upload='categories/')
         magic_image.save_image()
         category = Category(name=data['name'],image=magic_image.FILE_NAME)
         category.save_to_db()
@@ -40,7 +40,7 @@ class UpdateDeleteCategory(Resource):
         if file:
             MagicImage.delete_image(file=category.image,path_delete='categories/')
             # save image
-            magic_image = MagicImage(file=file['image'],resize=260,path_upload='categories/')
+            magic_image = MagicImage(file=file['image'],width=260,height=260,path_upload='categories/')
             magic_image.save_image()
             category.image = magic_image.FILE_NAME
 
