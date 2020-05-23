@@ -149,6 +149,44 @@ class ActivityTest(BaseTest):
             img3 = io.BytesIO(im.read())
         with open(os.path.join(self.DIR_IMAGE,'image.jpg'),'rb') as im:
             img4 = io.BytesIO(im.read())
+        # check discount,price,min_person,category_id minus number
+        with self.app() as client:
+            res = client.post('/activity/create',content_type=self.content_type,headers={'Authorization':f"Bearer {self.ACCESS_TOKEN}"},
+                data={'image':(img, 'image.jpg'),'image2': (img2, 'image.jpg'),'image3': (img3, 'image.jpg'),'image4': (img4, 'image.jpg'),
+                    'discount':-1,'price':-1,'min_person':-1,'category_id':-1})
+            self.assertEqual(400,res.status_code)
+            self.assertListEqual(["Value must be greater than 0"],json.loads(res.data)['discount'])
+            self.assertListEqual(["Value must be greater than 0"],json.loads(res.data)['price'])
+            self.assertListEqual(["Must be greater than or equal to 1 and less than or equal to 100."],json.loads(res.data)['min_person'])
+            self.assertListEqual(["Value must be greater than 0"],json.loads(res.data)['category_id'])
+
+        with open(os.path.join(self.DIR_IMAGE,'image.jpg'),'rb') as im:
+            img = io.BytesIO(im.read())
+        with open(os.path.join(self.DIR_IMAGE,'image.jpg'),'rb') as im:
+            img2 = io.BytesIO(im.read())
+        with open(os.path.join(self.DIR_IMAGE,'image.jpg'),'rb') as im:
+            img3 = io.BytesIO(im.read())
+        with open(os.path.join(self.DIR_IMAGE,'image.jpg'),'rb') as im:
+            img4 = io.BytesIO(im.read())
+
+        # check discount cannot less than IDR 10k
+        # check price cannot less than IDR 10k
+        with self.app() as client:
+            res = client.post('/activity/create',content_type=self.content_type,headers={'Authorization':f"Bearer {self.ACCESS_TOKEN}"},
+                data={'image':(img, 'image.jpg'),'image2': (img2, 'image.jpg'),'image3': (img3, 'image.jpg'),'image4': (img4, 'image.jpg'),
+                    'discount':1,'price':1,'min_person':1,'category_id':1})
+            self.assertEqual(400,res.status_code)
+            self.assertListEqual(["Discount cannot less than IDR. 10.000"],json.loads(res.data)['discount'])
+            self.assertListEqual(["Price cannot less than IDR. 10.000"],json.loads(res.data)['price'])
+
+        with open(os.path.join(self.DIR_IMAGE,'image.jpg'),'rb') as im:
+            img = io.BytesIO(im.read())
+        with open(os.path.join(self.DIR_IMAGE,'image.jpg'),'rb') as im:
+            img2 = io.BytesIO(im.read())
+        with open(os.path.join(self.DIR_IMAGE,'image.jpg'),'rb') as im:
+            img3 = io.BytesIO(im.read())
+        with open(os.path.join(self.DIR_IMAGE,'image.jpg'),'rb') as im:
+            img4 = io.BytesIO(im.read())
 
         # check category not found
         with self.app() as client:
@@ -175,7 +213,7 @@ class ActivityTest(BaseTest):
             res = client.post('/activity/create',content_type=self.content_type,headers={'Authorization':f"Bearer {self.ACCESS_TOKEN}"},
                 data={'image':(img, 'image.jpg'),'image2': (img2, 'image.jpg'),'image3': (img3, 'image.jpg'),'image4': (img4, 'image.jpg'),
                     'name': self.NAME,'description':'asds','duration':'dwqwdq',
-                    'category_id':category.id,'discount':20,'price':10000,'min_person':2,
+                    'category_id':category.id,'discount':10001,'price':10000,'min_person':2,
                     'include':'dwqdwq','pickup':'dwqdwq','information':'dwqdwq'})
             self.assertEqual(201,res.status_code)
             self.assertEqual("Success add activity.",json.loads(res.data)['message'])
@@ -196,7 +234,7 @@ class ActivityTest(BaseTest):
             res = client.post('/activity/create',content_type=self.content_type,headers={'Authorization':f"Bearer {self.ACCESS_TOKEN}"},
                 data={'image':(img, 'image.jpg'),'image2': (img2, 'image.jpg'),'image3': (img3, 'image.jpg'),'image4': (img4, 'image.jpg'),
                     'name': self.NAME,'description':'asds','duration':'dwqwdq',
-                    'category_id':category.id,'discount':20,'price':10000,'min_person':2,
+                    'category_id':category.id,'discount':10000,'price':10000,'min_person':2,
                     'include':'dwqdwq','pickup':'dwqdwq','information':'dwqdwq'})
             self.assertEqual(400,res.status_code)
             self.assertListEqual(['The name has already been taken.'],json.loads(res.data)['name'])
@@ -305,6 +343,26 @@ class ActivityTest(BaseTest):
             self.assertListEqual(["Shorter than minimum length 3."],json.loads(res.data)['include'])
             self.assertListEqual(["Length must be between 3 and 100."],json.loads(res.data)['pickup'])
             self.assertListEqual(["Shorter than minimum length 3."],json.loads(res.data)['information'])
+
+        # check discount,price,min_person,category_id minus number
+        with self.app() as client:
+            res = client.put('/activity/crud/{}'.format(activity.id),content_type=self.content_type,headers={'Authorization':f"Bearer {self.ACCESS_TOKEN}"},
+                data={'discount':-1,'price':-1,'min_person':-1,'category_id':-1})
+            self.assertEqual(400,res.status_code)
+            self.assertListEqual(["Value must be greater than 0"],json.loads(res.data)['discount'])
+            self.assertListEqual(["Value must be greater than 0"],json.loads(res.data)['price'])
+            self.assertListEqual(["Must be greater than or equal to 1 and less than or equal to 100."],json.loads(res.data)['min_person'])
+            self.assertListEqual(["Value must be greater than 0"],json.loads(res.data)['category_id'])
+
+        # check discount cannot less than IDR 10k
+        # check price cannot less than IDR 10k
+        with self.app() as client:
+            res = client.put('/activity/crud/{}'.format(activity.id),content_type=self.content_type,headers={'Authorization':f"Bearer {self.ACCESS_TOKEN}"},
+                data={'discount':1,'price':1,'min_person':1,'category_id':1})
+            self.assertEqual(400,res.status_code)
+            self.assertListEqual(["Discount cannot less than IDR. 10.000"],json.loads(res.data)['discount'])
+            self.assertListEqual(["Price cannot less than IDR. 10.000"],json.loads(res.data)['price'])
+
         # check category not found
         with self.app() as client:
             res = client.put('/activity/crud/{}'.format(activity.id),content_type=self.content_type,
@@ -332,7 +390,7 @@ class ActivityTest(BaseTest):
                 headers={'Authorization':f"Bearer {self.ACCESS_TOKEN}"},
                 data={'image':(img, 'image.jpg'),'image2': (img2, 'image.jpg'),'image3': (img3, 'image.jpg'),'image4': (img4, 'image.jpg'),
                     'name': self.NAME,'description':'asds','duration':'dwqwdq',
-                    'category_id':category.id,'discount':20,'price':10000,'min_person':2,
+                    'category_id':category.id,'discount':10000,'price':10000,'min_person':2,
                     'include':'dwqdwq','pickup':'dwqdwq','information':'dwqdwq'})
             self.assertEqual(200,res.status_code)
             self.assertEqual("Success update activity.",json.loads(res.data)['message'])
@@ -353,7 +411,7 @@ class ActivityTest(BaseTest):
             res = client.post('/activity/create',content_type=self.content_type,headers={'Authorization':f"Bearer {self.ACCESS_TOKEN}"},
                 data={'image':(img, 'image.jpg'),'image2': (img2, 'image.jpg'),'image3': (img3, 'image.jpg'),'image4': (img4, 'image.jpg'),
                     'name': self.NAME_2,'description':'asds','duration':'dwqwdq',
-                    'category_id':category.id,'discount':20,'price':10000,'min_person':2,
+                    'category_id':category.id,'discount':10000,'price':10000,'min_person':2,
                     'include':'dwqdwq','pickup':'dwqdwq','information':'dwqdwq'})
             self.assertEqual(201,res.status_code)
             self.assertEqual("Success add activity.",json.loads(res.data)['message'])
@@ -367,7 +425,7 @@ class ActivityTest(BaseTest):
             res = client.put('/activity/crud/{}'.format(activity.id),content_type=self.content_type,
                 headers={'Authorization':f"Bearer {self.ACCESS_TOKEN}"},
                 data={'name': self.NAME,'description':'asds','duration':'dwqwdq',
-                    'category_id':category.id,'discount':20,'price':10000,'min_person':2,
+                    'category_id':category.id,'discount':10000,'price':10000,'min_person':2,
                     'include':'dwqdwq','pickup':'dwqdwq','information':'dwqdwq'})
             self.assertEqual(200,res.status_code)
             self.assertEqual("Success update activity.",json.loads(res.data)['message'])
@@ -381,7 +439,7 @@ class ActivityTest(BaseTest):
             res = client.put('/activity/crud/{}'.format(activity.id),content_type=self.content_type,
                 headers={'Authorization':f"Bearer {self.ACCESS_TOKEN}"},
                 data={'name': self.NAME_2,'description':'asds','duration':'dwqwdq',
-                    'category_id':category.id,'discount':20,'price':10000,'min_person':2,
+                    'category_id':category.id,'discount':10000,'price':10000,'min_person':2,
                     'include':'dwqdwq','pickup':'dwqdwq','information':'dwqdwq'})
             self.assertEqual(400,res.status_code)
             self.assertListEqual(['The name has already been taken.'],json.loads(res.data)['name'])

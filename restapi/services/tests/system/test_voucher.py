@@ -44,7 +44,7 @@ class VoucherTest(BaseTest):
             res = client.post('/activity/create',content_type=self.content_type,headers={'Authorization':f"Bearer {self.ACCESS_TOKEN}"},
                 data={'image':(img, 'image.jpg'),'image2': (img2, 'image.jpg'),'image3': (img3, 'image.jpg'),'image4': (img4, 'image.jpg'),
                     'name': self.NAME,'description':'asds','duration':'dwqwdq',
-                    'category_id':category.id,'discount':20,'price':10000,'min_person':2,
+                    'category_id':category.id,'price':10000,'min_person':2,
                     'include':'dwqdwq','pickup':'dwqdwq','information':'dwqdwq'})
             self.assertEqual(201,res.status_code)
             self.assertEqual("Success add activity.",json.loads(res.data)['message'])

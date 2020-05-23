@@ -2,8 +2,8 @@ from marshmallow import Schema, fields, validate, validates, ValidationError
 
 class UpdateAccountSchema(Schema):
     fullname = fields.Str(required=True,validate=validate.Length(min=3,max=100))
-    country = fields.Int(required=True)
-    phone = fields.Number(required=True)
+    country = fields.Int(required=True,strict=True,validate=validate.Range(min=1,error="Value must be greater than 0"))
+    phone = fields.Number(required=True,validate=validate.Range(min=1,error="Value must be greater than 0"))
 
     @validates('phone')
     def validate_phone(self,value):

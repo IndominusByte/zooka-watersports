@@ -395,6 +395,13 @@ class UserTest(BaseTest):
             self.assertListEqual(["Length must be between 3 and 100."],json.loads(res.data)['fullname'])
             self.assertListEqual(["Not a valid integer."],json.loads(res.data)['country'])
             self.assertListEqual(["Not a valid number."],json.loads(res.data)['phone'])
+        # check country & phone minus number
+        with self.app() as client:
+            res = client.put('/account/update-account',json={'fullname':'asdasd','country':-1,'phone':-1},
+                    headers={'Authorization':f"Bearer {self.ACCESS_TOKEN}"})
+            self.assertEqual(400,res.status_code)
+            self.assertListEqual(["Value must be greater than 0"],json.loads(res.data)['country'])
+            self.assertListEqual(["Value must be greater than 0"],json.loads(res.data)['phone'])
         # invalid phone number
         with self.app() as client:
             res = client.put('/account/update-account',json={'fullname':'asdasd','country':2,'phone':'08786233dwq231'},
