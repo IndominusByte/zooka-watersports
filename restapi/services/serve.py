@@ -1,4 +1,3 @@
-import redis
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy, get_debug_queries
 from flask_migrate import Migrate
@@ -9,6 +8,7 @@ from flask_cors import CORS
 from marshmallow import ValidationError
 from services.config import Development
 from dotenv import load_dotenv
+from redis import Redis
 
 # load .env
 load_dotenv()
@@ -24,7 +24,7 @@ api = Api(app)
 jwt = JWTManager(app)
 
 # connect database redis
-conn_redis = redis.Redis(host='localhost', port=6379, db=0,decode_responses=True)
+conn_redis = Redis(host='localhost', port=6379, db=0,decode_responses=True)
 
 @app.errorhandler(ValidationError)
 def error_handler(err):

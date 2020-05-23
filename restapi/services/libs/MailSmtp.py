@@ -29,7 +29,7 @@ class MailSmtp:
         msg.attach(MIMEText(html,'html'))
         # Try to log in to server smtp
         try:
-            if cls._USE_SSL == 'True': server = smtplib.SMTP_SSL(cls._SMTP_SERVER,cls._PORT)
+            if cls._USE_SSL == 'true': server = smtplib.SMTP_SSL(cls._SMTP_SERVER,cls._PORT)
             else: server = smtplib.SMTP(cls._SMTP_SERVER,cls._PORT)
         except smtplib.SMTPException as e:
             raise MailSmtpException(e)

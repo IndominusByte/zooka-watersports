@@ -55,4 +55,4 @@ api.add_resource(Replies.DeleteReplyComment,'/reply/delete/<int:id>')
 api.add_resource(Vouchers.CreateVoucher,'/voucher/create')
 
 if __name__ == '__main__':
-    app.run(host='192.168.214.128')
+    app.run(host='192.168.18.45')

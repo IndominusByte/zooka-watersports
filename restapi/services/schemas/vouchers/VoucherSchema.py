@@ -1,3 +1,4 @@
+import re
 from marshmallow import Schema, fields, validate, validates, validates_schema, ValidationError
 from services.models.VoucherModel import Voucher
 from services.models.ActivityModel import Activity
@@ -29,6 +30,16 @@ class VoucherSchema(Schema):
     def validate_code(self,value):
         if Voucher.query.filter_by(code=value).first():
             raise ValidationError('The code has already been taken.')
+
+    @validates('valid_start')
+    def validate_valid_start(self,value):
+        if not re.match(r"^\d{4}\-(0[1-9]|1[012])\-(0[1-9]|[12][0-9]|3[01])$",value):
+            raise ValidationError('Invalid date format.')
+
+    @validates('valid_end')
+    def validate_valid_end(self,value):
+        if not re.match(r"^\d{4}\-(0[1-9]|1[012])\-(0[1-9]|[12][0-9]|3[01])$",value):
+            raise ValidationError('Invalid date format.')
 
     @validates('discount')
     def validate_discount(self,value):
