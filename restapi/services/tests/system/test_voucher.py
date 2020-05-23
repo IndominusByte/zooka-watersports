@@ -50,6 +50,15 @@ class VoucherTest(BaseTest):
             self.assertEqual("Success add activity.",json.loads(res.data)['message'])
 
     def test_03_validation_create_voucher(self):
+        self.login(self.EMAIL_TEST_2)
+        # check user is admin
+        with self.app() as client:
+            res = client.post('/voucher/create',headers={'Authorization':f"Bearer {self.ACCESS_TOKEN}"})
+            self.assertEqual(403,res.status_code)
+            self.assertEqual("Forbidden access this endpoint!",json.loads(res.data)['msg'])
+
+        self.login(self.EMAIL_TEST)
+
         # check image required
         with self.app() as client:
             res = client.post('/voucher/create',content_type=self.content_type,headers={'Authorization':f"Bearer {self.ACCESS_TOKEN}"},
